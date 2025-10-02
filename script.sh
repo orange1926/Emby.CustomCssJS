@@ -9,7 +9,7 @@ echo "Emby-css安装中...
 wget -q --no-check-certificate https://raw.githubusercontent.com/Shurelol/Emby.CustomCssJS/main/src/CustomCssJS.js -O CustomCssJS.js  
 
 # 从系统复制文件到容器内
-docker cp ./CustomCssJS.js $name:/system/dashboard-ui/modules/
+docker cp ./CustomCssJS.js $name:/app/emby/system/dashboard-ui/modules/
 
 # 主安装程序
 function Installing() {  
@@ -29,23 +29,23 @@ function Installing() {
 	# 将处理后的内容写回app.js文件  
 	echo -e "$no_newline_content" > app.js
 	# 覆盖容器内app.js文件
-	docker cp ./app.js $name:/system/dashboard-ui/
+	docker cp ./app.js $name:/app/emby/system/dashboard-ui/
 }
 
 # 先复制容器内的app.js到系统内
-docker cp $name:/system/dashboard-ui/app.js ./
+docker cp $name:/app/emby/system/dashboard-ui/app.js ./
 
 # 如果不包含替换内容
 count=$(grep -c "CustomCssJS.js" app.js)
 if [ "$count" -eq 0 ]; then
-    docker cp $name:/system/dashboard-ui/app.js ./
+    docker cp $name:/app/emby/system/dashboard-ui/app.js ./
     # 备份
-    docker exec -it $name mkdir -p /system/dashboard-ui/bak/
-    docker cp ./app.js $name:/system/dashboard-ui/bak/
+    docker exec -it $name mkdir -p /app/emby/system/dashboard-ui/bak/
+    docker cp ./app.js $name:/app/emby/system/dashboard-ui/bak/
     Installing
     echo "成功！Index.html 首次安装！"
 else
-    docker cp $name:/system/dashboard-ui/bak/app.js ./
+    docker cp $name:/app/emby/system/dashboard-ui/bak/app.js ./
     Installing
     echo "成功！Index.html 已重新修改！"
 fi 

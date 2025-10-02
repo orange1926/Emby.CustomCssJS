@@ -1,22 +1,9 @@
 #!/bin/bash
 
-# 固定Emby容器名称为emby，无需用户输入
 name="emby"
 
 echo "Emby-css安装中...
-1.先检查插件
-2.再修改首页html"
-
-# 使用 docker exec 检查文件是否存在  
-if docker exec "$name" test -f "/config/plugins/Emby.CustomCssJS.dll"; then  
-    echo "插件已安装过，无需重复安装！"  
-else  
-    # 安装插件
-    wget -q --no-check-certificate https://raw.githubusercontent.com/Shurelol/Emby.CustomCssJS/main/src/Emby.CustomCssJS.dll -O Emby.CustomCssJS.dll
-    docker cp ./Emby.CustomCssJS.dll $name:/config/plugins/
-    docker exec -it $name chmod 755 /config/plugins/Emby.CustomCssJS.dll
-    echo "插件首次安装！"  
-fi
+1.再修改首页html"
 
 # 下载所需文件到系统
 wget -q --no-check-certificate https://raw.githubusercontent.com/Shurelol/Emby.CustomCssJS/main/src/CustomCssJS.js -O CustomCssJS.js  
@@ -41,7 +28,7 @@ function Installing() {
 	no_newline_content=$(echo "$content" | tr -d '\n')  
 	# 将处理后的内容写回app.js文件  
 	echo -e "$no_newline_content" > app.js
-	# 覆盖容器内取index.html文件
+	# 覆盖容器内app.js文件
 	docker cp ./app.js $name:/system/dashboard-ui/
 }
 
@@ -61,4 +48,9 @@ else
     docker cp $name:/system/dashboard-ui/bak/app.js ./
     Installing
     echo "成功！Index.html 已重新修改！"
-fi
+fi 
+
+# 清理本地文件
+rm -f CustomCssJS.js app.js
+
+echo "修改完成！"
